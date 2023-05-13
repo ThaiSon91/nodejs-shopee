@@ -1,8 +1,12 @@
 "use strict";
 
 const mongoose = require("mongoose");
+const {
+  db: { host, name, port },
+} = require("../configs/config.mongodb");
 
-const connectString = `mongodb://127.0.0.1:27017/shopDEV`;
+const connectString = `mongodb://${host}:${port}/${name}`;
+// const connectString = `mongodb://127.0.0.1:27017/shopDEV`;
 
 const { countConnect } = require("../helpers/check.connect");
 //lam quen singleton de khoi tao mot ket noi
@@ -19,8 +23,9 @@ class Database {
       mongoose.set("debug", { color: true });
     }
 
+    //default maxPoolSize 100
     mongoose
-      .connect(connectString)
+      .connect(connectString, { maxPoolSize: 50 })
       .then((_) => console.log(`Connected Mongodb Sucess PRO`, countConnect()))
       .catch((err) => console.log(`Error Connect`));
   }
