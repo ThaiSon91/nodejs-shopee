@@ -16,6 +16,10 @@ require("./dbs/init.mongodb");
 // const { countConnect } = require("./helpers/check.connect");
 // countConnect();
 
+//check over load
+const { checkOverload } = require("./helpers/check.connect");
+checkOverload();
+
 //init routes
 app.get("/", (req, res, next) => {
   // const strCompress = "Hello World, test compression";
