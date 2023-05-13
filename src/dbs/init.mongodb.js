@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 
 const connectString = `mongodb://127.0.0.1:27017/shopDEV`;
 
+const { countConnect } = require("../helpers/check.connect");
 //lam quen singleton de khoi tao mot ket noi
 //sau nay co them strategy pattern code tuyet dep
 class Database {
@@ -20,7 +21,7 @@ class Database {
 
     mongoose
       .connect(connectString)
-      .then((_) => console.log(`Connected Mongodb Sucess PRO`))
+      .then((_) => console.log(`Connected Mongodb Sucess PRO`, countConnect()))
       .catch((err) => console.log(`Error Connect`));
   }
 

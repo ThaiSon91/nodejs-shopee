@@ -12,6 +12,10 @@ app.use(compression());
 //init db
 require("./dbs/init.mongodb");
 
+//dem so luong connect, co the bo trong init.mongodb.js
+// const { countConnect } = require("./helpers/check.connect");
+// countConnect();
+
 //init routes
 app.get("/", (req, res, next) => {
   // const strCompress = "Hello World, test compression";
