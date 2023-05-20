@@ -7,7 +7,7 @@ const DOCUMENT_NAME = "Key";
 const COLLECTION_NAME = "Keys";
 
 // Declare the Schema of the mongo model
-const keytokenSchema = new Schema(
+const keyTokenSchema = new Schema(
   {
     user: {
       type: Schema.Types.ObjectId,
@@ -18,6 +18,7 @@ const keytokenSchema = new Schema(
       type: String,
       required: true,
     },
+    // de test hacker su dung cac token nay
     refreshToken: {
       type: Array,
       default: [],
@@ -27,4 +28,4 @@ const keytokenSchema = new Schema(
 );
 
 // Export the model
-module.exports = model(DOCUMENT_NAME, keytokenSchema);
+module.exports = model(DOCUMENT_NAME, keyTokenSchema);

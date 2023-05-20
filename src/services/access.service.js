@@ -4,6 +4,7 @@ const shopModel = require("../models/shop.model");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const KeyTokenService = require("./keyToken.service");
+const { createTokenPair } = require("../auth/authUtils");
 
 const RoleShop = {
   SHOP: "SHOP",
@@ -30,7 +31,7 @@ class AccessService {
       const newShop = await shopModel.create({
         name,
         email,
-        passwordHash,
+        password: passwordHash,
         roles: [RoleShop.SHOP],
       });
       // neu dang ky thanh cong cap cho refresh token va access token
@@ -42,7 +43,7 @@ class AccessService {
           modulusLength: 4096,
         });
 
-        console.log({ privateKey, publicKey });
+        console.log({ privateKey, publicKey }); // save collection KeyStore
 
         const publicKeyString = await KeyTokenService.createKeyToken({
           userId: newShop._id,
@@ -56,8 +57,27 @@ class AccessService {
           };
         }
 
-        //const tokens = await
+        // created token pair
+        const tokens = await createTokenPair(
+          { userId: newShop._id, email },
+          publicKey,
+          privateKey
+        );
+        console.log(`Created Token Success::`, tokens);
+
+        return {
+          code: 201,
+          metadata: {
+            shop: newShop,
+            tokens,
+          },
+        };
       }
+
+      return {
+        code: 200,
+        metadata: null,
+      };
     } catch (error) {
       return {
         code: "xxx",
