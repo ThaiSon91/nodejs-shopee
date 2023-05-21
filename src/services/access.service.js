@@ -2,7 +2,9 @@
 
 const shopModel = require("../models/shop.model");
 const bcrypt = require("bcrypt");
-const crypto = require("crypto");
+// const crypto = require("crypto");
+const crypto = require("node:crypto");
+
 const KeyTokenService = require("./keyToken.service");
 const { createTokenPair } = require("../auth/authUtils");
 const { getInfoData } = require("../utils");
@@ -40,42 +42,46 @@ class AccessService {
       if (newShop) {
         // create privatekey: cho nguoi dung (ko luu trong he thong), publicKey: luu trong he thong
         // privatekey: sai cai token. publicKey: verify token
-        const { privateKey, publicKey } = crypto.generateKeyPairSync("rsa", {
-          modulusLength: 4096,
-          publicKeyEncoding: {
-            type: "pkcs1", //pkcs8
-            format: "pem",
-          },
-          privateKeyEncoding: {
-            type: "pkcs1", //pkcs8
-            format: "pem",
-          },
-        });
+        // Dung cho cac he thong lon nhu Amazon
+        // const { privateKey, publicKey } = crypto.generateKeyPairSync("rsa", {
+        //   modulusLength: 4096,
+        //   publicKeyEncoding: {
+        //     type: "pkcs1", //pkcs8
+        //     format: "pem",
+        //   },
+        //   privateKeyEncoding: {
+        //     type: "pkcs1", //pkcs8
+        //     format: "pem",
+        //   },
+        // });
+
+        // De don gian hon ko dung cryptogeneral nay
+        const privateKey = crypto.randomBytes(64).toString("hex");
+        const publicKey = crypto.randomBytes(64).toString("hex");
+
         //Public Key CryptoGraphy Standards
         console.log({ privateKey, publicKey }); // save collection KeyStore
 
-        const publicKeyString = await KeyTokenService.createKeyToken({
+        const keyStore = await KeyTokenService.createKeyToken({
           userId: newShop._id,
           publicKey,
+          privateKey,
         });
 
-        if (!publicKeyString) {
+        if (!keyStore) {
           return {
             code: "xxx",
-            message: "publicKeyString error",
+            message: "keyStore error",
           };
         }
         /*publicKey chuyen hashstring luu vao database, 
         RSA ko luu truc tiep vao mongodb->chuyen json string luu vao db
         khi lay ra tu mongodb chuyen ve publicKey*/
 
-        const publicKeyObject = crypto.createPublicKey(publicKeyString);
-        console.log(`publicKeyObject::`, publicKeyObject);
-
         // created token pair
         const tokens = await createTokenPair(
           { userId: newShop._id, email },
-          publicKeyObject,
+          publicKey,
           privateKey
         );
         console.log(`Created Token Success::`, tokens);
