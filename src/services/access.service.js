@@ -41,8 +41,16 @@ class AccessService {
         // privatekey: sai cai token. publicKey: verify token
         const { privateKey, publicKey } = crypto.generateKeyPairSync("rsa", {
           modulusLength: 4096,
+          publicKeyEncoding: {
+            type: "pkcs1", //pkcs8
+            format: "pem",
+          },
+          privateKeyEncoding: {
+            type: "pkcs1", //pkcs8
+            format: "pem",
+          },
         });
-
+        //Public Key CryptoGraphy Standards
         console.log({ privateKey, publicKey }); // save collection KeyStore
 
         const publicKeyString = await KeyTokenService.createKeyToken({
@@ -56,11 +64,17 @@ class AccessService {
             message: "publicKeyString error",
           };
         }
+        /*publicKey chuyen hashstring luu vao database, 
+        RSA ko luu truc tiep vao mongodb->chuyen json string luu vao db
+        khi lay ra tu mongodb chuyen ve publicKey*/
+
+        const publicKeyObject = crypto.createPublicKey(publicKeyString);
+        console.log(`publicKeyObject::`, publicKeyObject);
 
         // created token pair
         const tokens = await createTokenPair(
           { userId: newShop._id, email },
-          publicKey,
+          publicKeyObject,
           privateKey
         );
         console.log(`Created Token Success::`, tokens);
