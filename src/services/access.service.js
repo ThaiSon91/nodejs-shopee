@@ -12,6 +12,7 @@ const {
   BadRequestError,
   ConflictRequestError,
 } = require("../core/error.response");
+const { findByEmail } = require("./shop.service");
 
 const RoleShop = {
   SHOP: "SHOP",
@@ -21,6 +22,21 @@ const RoleShop = {
 };
 
 class AccessService {
+  /*
+    1- check email in dbs
+    2- match password
+    3- create AcceptToken & RefreshToken and save
+    4- generate tokens
+    5- get data return login
+  */
+  static login = async ({ email, password, refreshToken = null }) => {
+    const foundShop = await findByEmail({ email });
+    if (!foundShop) throw new BadRequestError("Shop not registered");
+
+    const match = bcrypt.compare(password, foundShop.password)
+    if(!match) throw new
+  };
+
   static signUp = async ({ name, email, password }) => {
     // try {
     // step1: check email exists??
