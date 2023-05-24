@@ -23,9 +23,13 @@ const keyTokenSchema = new Schema(
       required: true,
     },
     // de test hacker su dung cac token nay
-    refreshToken: {
+    refreshTokensUsed: {
       type: Array,
-      default: [],
+      default: [], // luu cac refresh token da duoc su dung
+    },
+    refreshToken: {
+      type: String,
+      required: true,
     },
   },
   { timestamps: true, collection: COLLECTION_NAME }
