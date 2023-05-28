@@ -57,7 +57,7 @@ const authentication = asyncHandler(async (req, res, next) => {
   if (!keyStore) throw new NotFoundError("Not Found keyStore");
 
   //3
-  const accessToken = req.headers[Header.AUTHORIZATION];
+  const accessToken = req.headers[HEADER.AUTHORIZATION];
   if (!accessToken) throw new AuthFailureError("Invalid Request");
 
   try {
