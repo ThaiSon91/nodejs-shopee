@@ -27,7 +27,7 @@ class AccessService {
   /*
     check token used ???
   */
-  static handlerRefreshToken = async (refreshToken) => {
+  handlerRefreshToken = async (refreshToken) => {
     // check xem token nay da duoc su dung chua?
     const foundToken = await KeyTokenService.findByRefreshTokenUsed(
       refreshToken
@@ -83,7 +83,7 @@ class AccessService {
     };
   };
 
-  static logout = async (keyStore) => {
+  logout = async (keyStore) => {
     const delKey = await KeyTokenService.removeKeyById(keyStore._id);
     console.debug(delKey);
     return delKey;
@@ -96,7 +96,7 @@ class AccessService {
     4- generate tokens
     5- get data return login
   */
-  static login = async ({ email, password, refreshToken = null }) => {
+  login = async ({ email, password, refreshToken = null }) => {
     // 1.
     const foundShop = await findByEmail({ email });
     if (!foundShop) throw new BadRequestError("Shop not registered");
@@ -229,4 +229,4 @@ class AccessService {
   };
 }
 
-module.exports = AccessService;
+module.exports = new AccessService();
